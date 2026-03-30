@@ -2,20 +2,17 @@ import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginPage() {
-  const { signIn, signUp } = useAuth();
-  const [isReg, setIsReg] = useState(false);
+  const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handle = async (e) => {
-    e.preventDefault(); setError(''); setSuccess(''); setLoading(true);
+    e.preventDefault(); setError(''); setLoading(true);
     try {
-      if (isReg) { await signUp(email, pw); setSuccess('¡Cuenta creada! Revisa tu correo.'); }
-      else await signIn(email, pw);
-    } catch (err) { setError(err.message || 'Error. Inténtalo de nuevo.'); }
+      await signIn(email, pw);
+    } catch (err) { setError(err.message || 'Credenciales inválidas. Verifica tu email y contraseña.'); }
     setLoading(false);
   };
 
@@ -34,17 +31,18 @@ export default function LoginPage() {
           <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Correo electrónico" className="input-field" required />
           <input type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="Contraseña" className="input-field" required minLength={6} />
           {error && <p className="text-red-400 text-sm text-center">{error}</p>}
-          {success && <p className="text-green-400 text-sm text-center">{success}</p>}
           <button type="submit" disabled={loading} className="btn-primary mt-1 flex items-center justify-center disabled:opacity-50">
-            {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : isReg ? 'Crear cuenta' : 'Entrar'}
+            {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Entrar'}
           </button>
         </form>
-        <p className="text-center text-white/20 text-[13px] mt-7 animate-fade-up opacity-0" style={{ animationDelay: '400ms' }}>
-          {isReg ? '¿Ya tienes cuenta? ' : '¿No tienes cuenta? '}
-          <button onClick={() => { setIsReg(!isReg); setError(''); setSuccess(''); }} className="text-spirit-400/60 hover:text-spirit-400 transition-colors">
-            {isReg ? 'Inicia sesión' : 'Crear una'}
-          </button>
-        </p>
+        <div className="text-center mt-8 animate-fade-up opacity-0" style={{ animationDelay: '400ms' }}>
+          <p className="text-white/15 text-xs leading-relaxed">
+            ¿Aún no tienes acceso?
+          </p>
+          <a href="https://pay.hotmart.com/T104969975T?checkoutMode=10" target="_blank" rel="noopener noreferrer" className="text-spirit-400/50 text-xs hover:text-spirit-400 transition-colors mt-1 inline-block">
+            Adquirir Oración 365
+          </a>
+        </div>
       </div>
     </div>
   );
